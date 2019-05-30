@@ -1,58 +1,47 @@
-var express = require('express');
-var socket = require('socket.io');
+var express = require("express");
+var socket = require("socket.io");
 
 // App setup
 var app = express();
-var server = app.listen(process.env.port||4000, function(){
-    console.log('listening for requests on port 4000,');
+var server = app.listen(process.env.PORT || 4000, function() {
+  console.log("listening for requests on port 4000,");
 });
 
 // Static files
-app.use(express.static('public'));
+app.use(express.static("public"));
 
 // Socket setup & pass server
 var io = socket(server);
 
-let handle=[],count;
-io.on('connection', (socket) => {
+io.on("connection", socket => {
+  console.log("made socket connection", socket.id);
 
-    console.log('made socket connection', socket.id);
-
-    require('getmac').getMac(function(err, macAddress){
-      if (err)  throw err
-      console.log(macAddress)
-  })
-
-
-count++;
-
-  socket.on('disconnect',function (data)  {
-
-
-    handle.filter(elem => {
-      elem !== data.handle
-    });
-
-    console.log( data.handle);
+  require("getmac").getMac(function(err, macAddress) {
+    if (err) throw err;
+    console.log(macAddress);
   });
 
-    socket.on('type',function(data){
-
-        socket.broadcast.emit('type', data);
-    })
-
-    // Handle chat event
-    socket.on('chat', function(data){
-        // console.log(data);
-        if(handle.includes(data.handle)){
-
-          return data.handle;
-        }else{
-              handle.push(data.handle)
-
-        }
-        data.onlineUsers=count++;
-        io.sockets.emit('chat', data);
+  socket.on("disconnect", function(data) {
+    handle.filter(elem => {
+      elem !== data.handle;
     });
 
+    console.log(data.handle);
+  });
+
+  socket.on("type", function(data) {
+    socket.broadcast.emit("type", data);
+  });
+
+  // Handle chat event
+  socket.on("chat", function(data) {
+    // console.log(data);
+    if (handle.includes(data.handle)) {
+      return data.handle;
+    } else {
+      handle.push(data.handle);
+    }
+    data.onlineUsers = count++;
+    io.sockets.emit("chat", data);
+  });
 });
