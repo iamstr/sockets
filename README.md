@@ -1,1 +1,1 @@
-find this live on chat.netlify.com
+this is chat application
