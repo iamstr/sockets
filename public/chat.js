@@ -1,5 +1,5 @@
 // Make connection
-var socket = io.connect(document.location);
+var socket = io.connect(new URL(document.location).host);
 
 // Query DOM
 var message = document.getElementById("message"),

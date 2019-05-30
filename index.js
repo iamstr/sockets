@@ -13,6 +13,8 @@ app.use(express.static("public"));
 // Socket setup & pass server
 var io = socket(server);
 
+let handle = [];
+
 io.on("connection", socket => {
   console.log("made socket connection", socket.id);
 
@@ -21,13 +23,7 @@ io.on("connection", socket => {
     console.log(macAddress);
   });
 
-  socket.on("disconnect", function(data) {
-    handle.filter(elem => {
-      elem !== data.handle;
-    });
-
-    console.log(data.handle);
-  });
+  socket.on("disconnect", function(data) {});
 
   socket.on("type", function(data) {
     socket.broadcast.emit("type", data);
@@ -35,13 +31,6 @@ io.on("connection", socket => {
 
   // Handle chat event
   socket.on("chat", function(data) {
-    // console.log(data);
-    if (handle.includes(data.handle)) {
-      return data.handle;
-    } else {
-      handle.push(data.handle);
-    }
-    data.onlineUsers = count++;
     io.sockets.emit("chat", data);
   });
 });
