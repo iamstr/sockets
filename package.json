@@ -1,5 +1,5 @@
 {
-  "name": "websockets-playlist",
+  "name": "websockets",
   "version": "1.0.0",
   "description": "A chat app using WebSockets",
   "main": "index.js",
